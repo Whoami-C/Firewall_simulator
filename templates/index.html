@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <title>Simulador de Firewall</title>
+</head>
+<body>
+    <h1>Simulador de Firewall</h1>
+
+    <h2>Bloquear IP</h2>
+    <form action="/bloquear" method="post">
+        <input name="ip" placeholder="IP para bloquear" required>
+        <button type="submit">Bloquear</button>
+    </form>
+
+    <h2>Liberar IP</h2>
+    <form action="/liberar" method="post">
+        <input name="ip" placeholder="IP para liberar" required>
+        <button type="submit">Liberar</button>
+    </form>
+
+    <h2>Lista de IPs Bloqueados</h2>
+    <ul>
+        {% for ip in blacklist %}
+            <li>{{ ip }}</li>
+        {% endfor %}
+    </ul>
+</body>
+</html>
