@@ -1,6 +1,10 @@
 import socket
 import threading
 import json
+import socketio
+
+sio = socketio.Client()
+sio.connect('http://localhost:5000')  # Conecta no Flask SocketIO
 
 BLACKLIST_FILE = 'blacklist.json'
 
@@ -16,7 +20,8 @@ def handle_client(conn):
         ip = conn.recv(1024).decode()
         blacklist = load_blacklist()
         status = "BLOQUEADO" if ip in blacklist else "ACEITO"
-        print(f"Conexão de {ip}: {status}")
+        sio.emit('log', f"Conexão de {ip}: {status}")
+
     except:
         pass
     finally:

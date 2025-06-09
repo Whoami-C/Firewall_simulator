@@ -25,5 +25,21 @@
             <li>{{ ip }}</li>
         {% endfor %}
     </ul>
+    
+ <h2>Logs em tempo real</h2>
+<div id="logs" style="background: #eee; padding: 10px; max-height: 300px; overflow-y: scroll;"></div>
+
+<script src="https://cdn.socket.io/4.0.0/socket.io.min.js"></script>
+<script>
+    const socket = io();  // conecta automaticamente com o backend
+    socket.on('log', function(data) {
+        const div = document.getElementById('logs');
+        const p = document.createElement('p');
+        p.innerText = data;
+        div.appendChild(p);
+        div.scrollTop = div.scrollHeight;
+    });
+</script>
+
 </body>
 </html>
