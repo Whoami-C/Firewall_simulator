@@ -2,44 +2,140 @@
 <html lang="pt-br">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Simulador de Firewall</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Poppins', sans-serif;
+        }
+        body {
+            background-color: #1e1e2f;
+            color: #f1f5f9;
+            padding: 20px;
+        }
+        h1 {
+            text-align: center;
+            margin-bottom: 20px;
+            color: #2563eb;
+        }
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+        }
+        .card {
+            background-color: #2d2d44;
+            border-radius: 10px;
+            padding: 20px;
+            margin-bottom: 20px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.5);
+        }
+        h2 {
+            color: #38bdf8;
+            margin-bottom: 10px;
+        }
+        form {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 10px;
+        }
+        input {
+            flex: 1;
+            padding: 10px;
+            border: none;
+            border-radius: 5px;
+            background-color: #f1f5f9;
+            color: #000;
+        }
+        button {
+            padding: 10px 20px;
+            border: none;
+            background-color: #2563eb;
+            color: #fff;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+        button:hover {
+            background-color: #1e40af;
+        }
+        ul {
+            list-style: none;
+            margin-top: 10px;
+        }
+        li {
+            background-color: #334155;
+            padding: 8px;
+            border-radius: 5px;
+            margin-bottom: 5px;
+        }
+        #logs {
+            background-color: #0f172a;
+            padding: 10px;
+            max-height: 300px;
+            overflow-y: scroll;
+            border-radius: 5px;
+            border: 1px solid #334155;
+        }
+        .footer {
+            text-align: center;
+            margin-top: 30px;
+            color: #94a3b8;
+        }
+    </style>
 </head>
 <body>
-    <h1>Simulador de Firewall</h1>
+    <div class="container">
+        <h1>🔥 Simulador de Firewall</h1>
 
-    <h2>Bloquear IP</h2>
-    <form action="/bloquear" method="post">
-        <input name="ip" placeholder="IP para bloquear" required>
-        <button type="submit">Bloquear</button>
-    </form>
+        <div class="card">
+            <h2>🔒 Bloquear IP</h2>
+            <form action="/bloquear" method="post">
+                <input name="ip" placeholder="IP para bloquear" required>
+                <button type="submit">Bloquear</button>
+            </form>
+        </div>
 
-    <h2>Liberar IP</h2>
-    <form action="/liberar" method="post">
-        <input name="ip" placeholder="IP para liberar" required>
-        <button type="submit">Liberar</button>
-    </form>
+        <div class="card">
+            <h2>🔓 Liberar IP</h2>
+            <form action="/liberar" method="post">
+                <input name="ip" placeholder="IP para liberar" required>
+                <button type="submit">Liberar</button>
+            </form>
+        </div>
 
-    <h2>Lista de IPs Bloqueados</h2>
-    <ul>
-        {% for ip in blacklist %}
-            <li>{{ ip }}</li>
-        {% endfor %}
-    </ul>
-    
- <h2>Logs em tempo real</h2>
-<div id="logs" style="background: #eee; padding: 10px; max-height: 300px; overflow-y: scroll;"></div>
+        <div class="card">
+            <h2>🛑 Lista de IPs Bloqueados</h2>
+            <ul>
+                {% for ip in blacklist %}
+                    <li>{{ ip }}</li>
+                {% endfor %}
+            </ul>
+        </div>
 
-<script src="https://cdn.socket.io/4.0.0/socket.io.min.js"></script>
-<script>
-    const socket = io();  // conecta automaticamente com o backend
-    socket.on('log', function(data) {
-        const div = document.getElementById('logs');
-        const p = document.createElement('p');
-        p.innerText = data;
-        div.appendChild(p);
-        div.scrollTop = div.scrollHeight;
-    });
-</script>
+        <div class="card">
+            <h2>📜 Logs em Tempo Real</h2>
+            <div id="logs"></div>
+        </div>
 
+        <div class="footer">
+            Desenvolvido por Whoami-C | <a href="https://github.com/Whoami-C/Firewall_simulator" style="color:#2563eb;">GitHub</a>
+        </div>
+    </div>
+
+    <script src="https://cdn.socket.io/4.0.0/socket.io.min.js"></script>
+    <script>
+        const socket = io();
+        socket.on('log', function(data) {
+            const div = document.getElementById('logs');
+            const p = document.createElement('p');
+            p.innerText = data;
+            div.appendChild(p);
+            div.scrollTop = div.scrollHeight;
+        });
+    </script>
 </body>
 </html>
