@@ -6,6 +6,8 @@ from flask_socketio import SocketIO
 import threading
 import socket
 import json
+import cliente_simulador
+INVADER_IP = cliente_simulador.get_invader_ip()
 
 app = Flask(__name__)
 socketio = SocketIO(app)
@@ -45,13 +47,39 @@ def liberar():
     save_blacklist(blacklist)
     return redirect(url_for('index'))
 
+@app.route('/simular', methods=['POST'])
+def simular():
+    ip = request.form['ip']
+    cliente_simulador.add_ips(ip)            # chama função do módulo
+    return redirect(url_for('index'))
+
+# ===== servidor TCP =====
+def handle_client(conn):
+    try:
+        ip = conn.recv(1024).decode()
+        status = "BLOQUEADO" if ip in load_blacklist() else "ACEITO"
+        log = f"Conexão de {ip}: {status}"
+        print(log)
+        socketio.emit('log', log)
+    finally:
+        conn.close()
+
+def start_tcp_server():
+    server = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+    server.bind(('localhost', 9999));  server.listen(5)
+    print("Servidor TCP escutando na porta 9999…")
+    while True:
+        conn, _ = server.accept()
+        threading.Thread(target=handle_client, args=(conn,), daemon=True).start()
+
 # ======= Servidor TCP =======
 def handle_client(conn):
     try:
         ip = conn.recv(1024).decode()
         blacklist = load_blacklist()
         status = "BLOQUEADO" if ip in blacklist else "ACEITO"
-        log = f"Conexão de {ip}: {status}"
+        tag = " <span class='tag-invader'>[INVASOR]</span>" if ip == INVADER_IP else ""
+        log = f"Conexão de {ip}: {status}{tag}"
         print(log)
         socketio.emit('log', log)
     except:

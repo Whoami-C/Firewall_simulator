@@ -85,12 +85,24 @@
             margin-top: 30px;
             color: #94a3b8;
         }
+        .tag-invader {
+    color:#ff5555;          
+    font-weight:bold;
+        }
+
+
     </style>
 </head>
 <body>
     <div class="container">
-        <h1>🔥 Simulador de Firewall</h1>
-
+        <h1>🔥 Simulador de Firewall </h1>
+        <div class="card">
+            <h2>➕ Adicionar IP à Simulação</h2>
+            <form action="/simular" method="post">
+                <input name="ip" placeholder="IP para simulação" required>
+                <button type="submit">Adicionar</button>
+            </form>
+        </div>
         <div class="card">
             <h2>🔒 Bloquear IP</h2>
             <form action="/bloquear" method="post">
@@ -132,7 +144,14 @@
         socket.on('log', function(data) {
             const div = document.getElementById('logs');
             const p = document.createElement('p');
-            p.innerText = data;
+            
+     const html = data.includes('[INVASOR]')
+            ? data.replace('[INVASOR]',
+                '<span class="tag-invader">[INVASOR]</span>')
+            : data;
+
+        p.innerHTML = html;
+        
             div.appendChild(p);
             div.scrollTop = div.scrollHeight;
         });
