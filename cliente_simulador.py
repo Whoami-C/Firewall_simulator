@@ -9,16 +9,18 @@ _lock = threading.Lock()      # evita corrida de threads
 
 
 def _simulate_client(ip: str) -> None:
-    """Loop infinito enviando <ip> ao servidor."""
     while True:
         try:
+            port  = random.choice([22, 80, 443, 8080])
+            proto = random.choice(["TCP", "UDP"])
+            msg   = f"{ip}|{port}|{proto}"
+
             with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
                 s.connect((SERVER_HOST, SERVER_PORT))
-                s.send(ip.encode())
+                s.send(msg.encode())
         except Exception:
             pass
         time.sleep(SEND_INTERVAL)
-
 
 def add_ips(new_ips):
     """
@@ -51,6 +53,27 @@ def add_ips(new_ips):
         threading.Thread(target=_simulate_client, args=(ip,),
                          daemon=True).start()
         print(f"[INFO] IP adicionado ao simulador: {ip}")
+
+# ------------ NOVO  --------------
+def add_client(ip: str, port: int, proto: str):
+    """
+    Inicia uma conexão simulada fixa (ip, port, proto).
+    """
+    def _loop():
+        while True:
+            try:
+                msg = f"{ip}|{port}|{proto}"
+                with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
+                    s.connect((SERVER_HOST, SERVER_PORT))
+                    s.send(msg.encode())
+            except Exception:
+                pass
+            time.sleep(SEND_INTERVAL)
+
+    threading.Thread(target=_loop, daemon=True).start()
+    print(f"[INFO] Cliente simulado {ip}:{port}/{proto} iniciado")
+# ----------------------------------
+
 
 
 # ---------- inicial ----------

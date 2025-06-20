@@ -95,38 +95,82 @@
 </head>
 <body>
     <div class="container">
-        <h1>🔥 Simulador de Firewall </h1>
+        <h1>🔥 Simulador de Firewall 🔥</h1>
         <div class="card">
-            <h2>➕ Adicionar IP à Simulação</h2>
-            <form action="/simular" method="post">
-                <input name="ip" placeholder="IP para simulação" required>
-                <button type="submit">Adicionar</button>
-            </form>
-        </div>
-        <div class="card">
+    <h2>➕ Adicionar IP à Simulação</h2>
+    <form action="/simular" method="post">
+        <input  name="ip"   placeholder="IP" required style="max-width:30%">
+        <input  name="port" placeholder="Porta (0 = randômica)" style="max-width:25%">
+        <select name="proto" style="background:#f1f5f9;color:#000;border:none;border-radius:5px;padding:10px">
+            <option value="TCP">TCP</option>
+            <option value="UDP">UDP</option>
+        </select>
+        <button type="submit">Adicionar</button>
+    </form>
+</div>
+        <!-- <div class="card">
             <h2>🔒 Bloquear IP</h2>
+            
             <form action="/bloquear" method="post">
                 <input name="ip" placeholder="IP para bloquear" required>
                 <button type="submit">Bloquear</button>
             </form>
-        </div>
+        </div> -->
 
         <div class="card">
-            <h2>🔓 Liberar IP</h2>
-            <form action="/liberar" method="post">
-                <input name="ip" placeholder="IP para liberar" required>
-                <button type="submit">Liberar</button>
-            </form>
-        </div>
+    <h2>🎯 Bloquear IP&nbsp;+&nbsp;Porta/Protocolo</h2>
+    <form action="/bloquear_regra" method="post">
+        <input name="ip"   placeholder="IP"   required style="max-width:30%">
+        <input name="port" placeholder="Porta (0 = qualquer)" style="max-width:25%">
+        <select name="proto" style="background:#f1f5f9;color:#000;border:none;border-radius:5px;padding:10px">
+            <option value="ANY">ANY</option>
+            <option value="TCP">TCP</option>
+            <option value="UDP">UDP</option>
+        </select>
+        <button type="submit">Adicionar regra</button>
+    </form>
+</div>
 
+        
         <div class="card">
+    <h2>🔓 Liberar IP / Regra</h2>
+    <form action="/liberar" method="post">
+        <input  name="ip"   placeholder="IP" required style="max-width:30%">
+        <input  name="port" placeholder="Porta (deixe vazio p/ blacklist)" style="max-width:25%">
+        <select name="proto" style="background:#f1f5f9;color:#000;border:none;border-radius:5px;padding:10px">
+            <option value="">--</option>
+            <option value="TCP">TCP</option>
+            <option value="UDP">UDP</option>
+        </select>
+        <button type="submit">Liberar</button>
+    </form>
+</div>
+
+        <!-- <div class="card">
             <h2>🛑 Lista de IPs Bloqueados</h2>
             <ul>
                 {% for ip in blacklist %}
                     <li>{{ ip }}</li>
                 {% endfor %}
             </ul>
-        </div>
+        </div> -->
+
+        <div class="card">
+    <!-- <h2>🛑 Lista de IPs Bloqueados</h2>
+    <ul>
+        {% for ip in blacklist %}
+            <li>{{ ip }}</li>
+        {% endfor %}
+    </ul> -->
+
+    <h2 style="margin-top:20px">🎯 Regras IP/Porta/Proto</h2>
+    <ul>
+        {% for r in rules %}
+            <li>{{ r.ip }} : {{ r.port if r.port else 'ANY' }} / {{ r.proto }}</li>
+        {% endfor %}
+    </ul>
+</div>
+
 
         <div class="card">
             <h2>📜 Logs em Tempo Real</h2>
